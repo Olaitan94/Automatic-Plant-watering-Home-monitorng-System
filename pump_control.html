@@ -1,0 +1,57 @@
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.css" />
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquerymobile/1.4.3/jquery.mobile.min.js"></script>
+    <script src="http://cdn.pubnub.com/pubnub.min.js"></script>
+  </head>
+  <body>
+    <div data-role="page">
+      <div data-role="header" style="background-color:#ffffff; font-size: 24px; text-align:center; color:#800000; height:60px">
+        <h1>Automatic Watering System: Control Panel</h1>
+      </div>
+      <div data-role="content">
+        <h3 class="ui-bar ui-bar-a ui-corner-all" style = "text-align:center; color:#800000">Select one of the following modes</h3>
+        <div class="ui-body ui-body-a ui-corner-all">
+          <div class="ui-grid-a toggle" id="sensor">
+            <div class="ui-block-b">
+              <button type="button" class="ui-shadow ui-btn ui-corner-all ui-btn-inline" value="2" style = "height: 70px; width:200px; background-color: #ccc6c6" >Sensor Based Mode</button>
+            </div>
+          </div>
+          <div class="ui-grid-a toggle" id="remote">
+            <div class="ui-block-b">
+              <button type="button" class="ui-shadow ui-btn ui-corner-all ui-btn-inline" value="1" style = "height: 70px; width:200px; background-color: #ccc6c6" >Instant Watering</button>
+            </div>
+          </div>
+          <div class="ui-grid-a toggle" id="update">
+            <div class="ui-block-b">
+              <button type="button" class="ui-shadow ui-btn ui-corner-all ui-btn-inline" value="0" style = "height: 70px; width:200px; background-color: #ccc6c6" >Update Dashboard</button>
+            </div>
+          </div>
+        </div>      
+      </div>
+    </div>
+    <script>
+      $(function() {
+        var channel = "smart_garden";
+        var pubnub = PUBNUB.init({
+          publish_key: 'pub-c-9b452d20-fd36-43fe-93b7-bc61283c9c25',
+          subscribe_key: 'sub-c-cc935b64-17b7-11ec-901d-e20c06117408'
+        });
+        $('button').click(function(){
+          var value = $(this).val();
+          var module = $(this).parent().parent().attr('id');
+          pubnub.publish({
+            channel: channel,
+            message: module});        
+        });
+        pubnub.addListener({ 
+          message: function(event) { 
+          let pElement = document.createElement('p'); 
+          pElement.appendChild(document.createTextNode(module)); 
+          document.body.appendChild(pElement); } 
+        }); 
+      });
+    </script>
+  </body>
